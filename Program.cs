@@ -10,6 +10,13 @@ namespace simple_cheat_loader
     {
         static void Main(string[] args)
         {
+            if(Process.GetProcessesByName("steam").Length == 1 && Process.GetProcessesByName("steamwebhelper").Length == 1)
+            {
+                Process steam = Process.GetProcessesByName("steam")[0];
+                Process steamwebhelper = Process.GetProcessesByName("steamwebhelper")[0];
+                steam.Kill();
+                steamwebhelper.Kill();
+            }
             Console.Title = "yourcheat | 0%";
             AutoType("starting loader...", 60);
             int a = 0;
@@ -35,7 +42,8 @@ namespace simple_cheat_loader
             {
                 case "1":
                     Console.Clear();
-                    AutoType(" waiting for csgo...", 60);
+                    Process.Start("C:\\Program Files (x86)\\Steam\\steam.exe", "-gameidlaunch 730");
+                    Thread.Sleep(10000);
                     Console.Clear();
                     if (Process.GetProcessesByName("csgo").Length == 1)
                     {
@@ -70,13 +78,12 @@ namespace simple_cheat_loader
 
         private static void MapDll()
         {
-            string dll = "dlllinkhere";
+            string dll = "https://github.com/qtCRYPTO/simple-cheat-loader/raw/main/test.dll"; //uses default test dll from the repo but can be changed to any link
+            //make sure that your repo is public if u want to download ur cheats dll from github
             WebClient wc = new WebClient();
             byte[] dllbytes = wc.DownloadData(dll);
-
             Process csgo = Process.GetProcessesByName("csgo")[0];
             var mapper = new LibraryMapper(csgo, dllbytes);
-
             mapper.MapLibrary();
             Thread.Sleep(1000);
             Process.GetCurrentProcess().Kill();
